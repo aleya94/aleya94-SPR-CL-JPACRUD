@@ -20,14 +20,14 @@ public class StoreService {
      * @return the persisted store
      */
     public Store persistStore(Store store){
-        return null;
+        return storeRepository.save(store);
     }
     /**
      * TODO: get all store entities
      * @return all store entities
      */
     public List<Store> getAllStores(){
-        return null;
+        return storeRepository.findAll();
     }
     /**
      * TODO: given an id of a store, return the store.
@@ -36,13 +36,16 @@ public class StoreService {
      * @return a store entity
      */
     public Store getStoreById(long id){
-        return null;
+        //// Retrieve a store by its id using the storeRepository
+        Optional<Store> optionalStore = storeRepository.findById(id);
+        return optionalStore.orElse(null);
     }
     /**
      * TODO: given an id of an existing store, delete the store
      */
     public void deleteStore(long id){
-//        code here
+        //// Delete a store by its id using the storeRepository
+        storeRepository.deleteById(id);
     }
     /**
      * TODO: given an id and some replacement data for a store, overwrite the data of an existing store,
@@ -50,7 +53,21 @@ public class StoreService {
      * @return the updated store entity
      */
     public Store updateStore(long id, Store replacement){
-        return null;
-    }
+        // Check if a store with the given id exists
+        Optional<Store> optionalExistingStore = storeRepository.findById(id);
 
+        if (optionalExistingStore.isPresent()) {
+            // Update the existing store with the replacement data
+            Store existingStore = optionalExistingStore.get();
+            existingStore.setName(replacement.getName());
+            existingStore.setAddress(replacement.getAddress());
+            // Add more properties to update as needed
+            // Save the updated store
+            return storeRepository.save(existingStore);
+        } else {
+            // If the store with the given id doesn't exist, return null
+            return null;
+            }
+
+    }
 }
